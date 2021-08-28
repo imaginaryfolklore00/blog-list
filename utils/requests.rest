@@ -1,0 +1,13 @@
+POST http://localhost:3003/api/blogs/ HTTP/1.1
+content-type: application/json
+
+{
+    "title": "Computer Networking Introduction - Ethernet and IP (Heavily Illustrated)",
+    "author": "Ivan",
+    "url": "https://iximiuz.com/en/posts/computer-networking-101/?utm_medium=reddit&utm_source=r_programming",
+    "likes": 10
+}
+
+###
+
+GET http://localhost:3003/api/blogs/ HTTP/1.1

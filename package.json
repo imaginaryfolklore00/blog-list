@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "test": "jest --verbose"
   },
   "author": "Nazeem Abdugofurov",
   "license": "MIT",
@@ -17,6 +17,10 @@
     "mongoose": "^5.13.7"
   },
   "devDependencies": {
+    "jest": "^27.1.0",
     "nodemon": "^2.0.12"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }

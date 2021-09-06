@@ -47,7 +47,7 @@ test('posted blog is saved correctly', async() => {
     expect(titles).toContain(newBlog.title)
 })
 
-test('if propery "likes" is missing, default likes to zero', async() => {
+test('if propery "likes" is missing when posting, default likes to zero', async() => {
     const newBlog = {
         title: "TDD harms architecture",
         author: "Robert C. Martin",
@@ -68,6 +68,20 @@ test('if propery "likes" is missing, default likes to zero', async() => {
 
     const createdBlog = blogsAtEnd[blogsAtEnd.length - 1]
     expect(createdBlog.likes).toEqual(0)
+})
+
+test('if properties "url" and "title" are missing when posting, respond with an error', async() => {
+    const newBlog = {
+        author: "Robert C. Martin"
+    }
+    
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(400)
+
+    const blogsAtEnd = await helper.blogsInDB()
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
 })
 
 afterAll(() => {

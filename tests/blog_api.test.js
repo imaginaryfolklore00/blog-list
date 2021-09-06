@@ -26,6 +26,27 @@ test('parameter "id" in every blog is defined', async() => {
     response.body.forEach(blog => blog.id.toBeDefined)
 })
 
+test('posted blog is saved correctly', async() => {
+    const newBlog = {
+        title: "TDD harms architecture",
+        author: "Robert C. Martin",
+        url: "http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html",
+        likes: 0
+    }
+    
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+
+    const blogsAtEnd = await helper.blogsInDB()
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
+
+    const titles = blogsAtEnd.map(blog => blog.title)
+    expect(titles).toContain(newBlog.title)
+})
+
 afterAll(() => {
     mongoose.connection.close()
 })

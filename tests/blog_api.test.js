@@ -31,7 +31,7 @@ test('posted blog is saved correctly', async() => {
         title: "TDD harms architecture",
         author: "Robert C. Martin",
         url: "http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html",
-        likes: 0
+        likes: 4
     }
     
     await api
@@ -45,6 +45,29 @@ test('posted blog is saved correctly', async() => {
 
     const titles = blogsAtEnd.map(blog => blog.title)
     expect(titles).toContain(newBlog.title)
+})
+
+test('if propery "likes" is missing, default likes to zero', async() => {
+    const newBlog = {
+        title: "TDD harms architecture",
+        author: "Robert C. Martin",
+        url: "http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html"
+    }
+    
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+
+    const blogsAtEnd = await helper.blogsInDB()
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
+
+    const titles = blogsAtEnd.map(blog => blog.title)
+    expect(titles).toContain(newBlog.title)
+
+    const createdBlog = blogsAtEnd[blogsAtEnd.length - 1]
+    expect(createdBlog.likes).toEqual(0)
 })
 
 afterAll(() => {

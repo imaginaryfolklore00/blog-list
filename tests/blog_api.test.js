@@ -15,11 +15,15 @@ beforeEach(async () => {
     await Promise.all(promiseArray)
 })
 
-test('blogs are returned correctly', async () => {
+test('correct amount of blogs returned on GET request', async () => {
     const response = await api.get('/api/blogs')
-    console.log(response.type)
     expect(response.type === /application\/json/)
     expect(response.body).toHaveLength(helper.initialBlogs.length)
+})
+
+test('parameter "id" in every blog is defined', async() => {
+    const response = await api.get('/api/blogs')
+    response.body.forEach(blog => blog.id.toBeDefined)
 })
 
 afterAll(() => {

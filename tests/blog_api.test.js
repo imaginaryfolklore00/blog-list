@@ -15,7 +15,7 @@ beforeEach(async () => {
     await Promise.all(promiseArray)
 })
 
-test('correct amount of blogs returned on GET request', async () => {
+test('correct amount of blogs returned upon GET request', async () => {
     const response = await api.get('/api/blogs')
     expect(response.type === /application\/json/)
     expect(response.body).toHaveLength(helper.initialBlogs.length)

@@ -16,16 +16,6 @@ beforeEach(async () => {
     const promiseArray = blogObjects.map(blog => blog.save())
     await Promise.all(promiseArray)
 
-    const newUser = {
-        username: "kirby",
-        name: "Kirby",
-        password: "pink"
-    }
-    
-    await api
-        .post('/api/users')
-        .send(newUser)
-        .expect(200)
 })
 
 test('correct amount of blogs returned upon GET request', async () => {
@@ -39,7 +29,7 @@ test('parameter "id" in every blog is defined', async() => {
     response.body.forEach(blog => blog.id.toBeDefined)
 })
 
-test.only('blog is not posted when token is not provided', async() => {
+test('blog is not posted when token is not provided', async() => {
     const newBlog = {
         title: "TDD harms architecture",
         author: "Robert C. Martin",
@@ -56,17 +46,20 @@ test.only('blog is not posted when token is not provided', async() => {
     expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
 })
 
-test.only('posted blog is saved correctly when given correct token', async() => {
-    const loginInfo = {
+test('posted blog is saved correctly', async() => {
+    const newUser = {
         username: "kirby",
         password: "pink"
     }
+    
+    await api
+        .post('/api/users')
+        .send(newUser)
 
     const response = await api
         .post('/api/login')
-        .send(loginInfo)
-        .expect(200)
-
+        .send(newUser)
+    
     const token = response.body.token
 
     const newBlog = {
@@ -75,7 +68,7 @@ test.only('posted blog is saved correctly when given correct token', async() => 
         url: "http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html",
         likes: 4
     }
-    
+    console.log(token)
     await api
         .post('/api/blogs')
         .set('Authorization', `bearer ${token}`)
@@ -91,6 +84,20 @@ test.only('posted blog is saved correctly when given correct token', async() => 
 })
 
 test('if propery "likes" is missing when posting, default likes to zero', async() => {
+    const newUser = {
+        username: "kirby",
+        password: "pink"
+    }
+    
+    await api
+        .post('/api/users')
+        .send(newUser)
+    const response = await api
+        .post('/api/login')
+        .send(newUser)
+    
+    const token = response.body.token
+
     const newBlog = {
         title: "TDD harms architecture",
         author: "Robert C. Martin",
@@ -99,6 +106,7 @@ test('if propery "likes" is missing when posting, default likes to zero', async(
     
     await api
         .post('/api/blogs')
+        .set('Authorization', `bearer ${token}`)
         .send(newBlog)
         .expect(200)
         .expect('Content-Type', /application\/json/)
@@ -114,12 +122,28 @@ test('if propery "likes" is missing when posting, default likes to zero', async(
 })
 
 test('if properties "url" and "title" are missing when posting, respond with an error', async() => {
+    const newUser = {
+        username: "kirby",
+        password: "pink"
+    }
+    
+    await api
+        .post('/api/users')
+        .send(newUser)
+
+    const response = await api
+        .post('/api/login')
+        .send(newUser)
+    
+    const token = response.body.token
+
     const newBlog = {
         author: "Robert C. Martin"
     }
     
     await api
         .post('/api/blogs')
+        .set('Authorization', `bearer ${token}`)
         .send(newBlog)
         .expect(400)
 

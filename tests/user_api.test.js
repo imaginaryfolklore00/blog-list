@@ -22,7 +22,7 @@ test('correct amount of users returned upon GET request', async () => {
 })
 
 test('parameter "id" in every user is defined', async() => {
-    const response = await api.get('/api/users')
+    const response = await api.get('/api/Users')
     response.body.forEach(User => User.id.toBeDefined)
 })
 
@@ -34,7 +34,7 @@ test('posted user is saved correctly', async() => {
     }
     
     await api
-        .post('/api/users')
+        .post('/api/Users')
         .send(newUser)
         .expect(200)
         .expect('Content-Type', /application\/json/)

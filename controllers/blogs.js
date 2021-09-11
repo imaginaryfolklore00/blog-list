@@ -43,16 +43,22 @@ blogsRouter.delete('/:id', userExtractor, async (req, res) => {
 
 blogsRouter.put('/:id', async (req, res) => {
   const body = req.body
+  const user = req.user
+  const blog = await Blog.findById(req.params.id)
 
-  const blog = {
+  const newParameters = {
     title: body.title,
     author: body.author,
     url: body.url,
     likes: body.likes || 0,
   }
 
-  const updatedBlog = await Blog.findByIdAndUpdate(req.params.id, blog, { new: true })
-  res.json(updatedBlog.toJSON())
+  if (blog.user.toString() === user.id.toString()) {
+    const updatedBlog = await Blog.findByIdAndUpdate(blog.id, newParameters, { new: true })
+    res.json(updatedBlog.toJSON())
+  }
+
+  res.status(401).json({ error: 'insufficient rights to update the blog post' })
 })
 
 module.exports = blogsRouter

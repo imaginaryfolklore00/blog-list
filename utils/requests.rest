@@ -19,9 +19,9 @@ POST http://localhost:3003/api/users/ HTTP/1.1
 content-type: application/json
 
 {
-    "username": "purphill",
-    "name": "Nazeem",
-    "password": "yoshi"
+    "username": "adam09",
+    "name": "Adam",
+    "password": "wario"
 }
 
 ###
@@ -37,3 +37,8 @@ content-type: application/json
     "username": "purphill",
     "password": "yoshi"
 }
+
+###
+
+DELETE http://localhost:3003/api/blogs/613b38ff2d10e740388d2aee HTTP/1.1
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InB1cnBoaWxsIiwiaWQiOiI2MTM4N2M1ODI2ODFmNTBkMzQ2NjEzZTAiLCJpYXQiOjE2MzEzNTI4NTF9.bP2iBLk04-c9IX9asNgkuH1_aW3jthZNDezPr_boN24

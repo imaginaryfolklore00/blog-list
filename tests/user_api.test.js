@@ -22,7 +22,7 @@ test('correct amount of users returned upon GET request', async () => {
 })
 
 test('parameter "id" in every user is defined', async() => {
-    const response = await api.get('/api/Users')
+    const response = await api.get('/api/users')
     response.body.forEach(User => User.id.toBeDefined)
 })
 
@@ -34,7 +34,7 @@ test('posted user is saved correctly', async() => {
     }
     
     await api
-        .post('/api/Users')
+        .post('/api/users')
         .send(newUser)
         .expect(200)
         .expect('Content-Type', /application\/json/)
@@ -62,14 +62,14 @@ test('if username or password are invalid, respond with an error', async() => {
     const res = await api
         .post('/api/users')
         .send(newUser)
-        .expect(401)
+        .expect(400)
 
     expect(res.body.error).toEqual('password should be at least 3 characters long')
 
     const res1 = await api
         .post('/api/users')
         .send(newUser1)
-        .expect(401)
+        .expect(400)
     
     expect(res1.body.error).toEqual('User validation failed: username: Path `username` (`ki`) is shorter than the minimum allowed length (3).')
 

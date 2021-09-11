@@ -4,15 +4,28 @@ const helper = require('./test_helper')
 const app = require('../app')
 const api = supertest(app)
 
+const User = require('../models/user')
 const Blog = require('../models/blog')
 
 beforeEach(async () => {
     await Blog.deleteMany({})
-  
+    await User.deleteMany({})
+
     const blogObjects = helper.initialBlogs
       .map(blog => new Blog(blog))
     const promiseArray = blogObjects.map(blog => blog.save())
     await Promise.all(promiseArray)
+
+    const newUser = {
+        username: "kirby",
+        name: "Kirby",
+        password: "pink"
+    }
+    
+    await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(200)
 })
 
 test('correct amount of blogs returned upon GET request', async () => {
@@ -26,7 +39,7 @@ test('parameter "id" in every blog is defined', async() => {
     response.body.forEach(blog => blog.id.toBeDefined)
 })
 
-test('posted blog is saved correctly', async() => {
+test.only('blog is not posted when token is not provided', async() => {
     const newBlog = {
         title: "TDD harms architecture",
         author: "Robert C. Martin",
@@ -36,6 +49,36 @@ test('posted blog is saved correctly', async() => {
     
     await api
         .post('/api/blogs')
+        .send(newBlog)
+        .expect(401)
+
+    const blogsAtEnd = await helper.blogsInDB()
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+})
+
+test.only('posted blog is saved correctly when given correct token', async() => {
+    const loginInfo = {
+        username: "kirby",
+        password: "pink"
+    }
+
+    const response = await api
+        .post('/api/login')
+        .send(loginInfo)
+        .expect(200)
+
+    const token = response.body.token
+
+    const newBlog = {
+        title: "TDD harms architecture",
+        author: "Robert C. Martin",
+        url: "http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html",
+        likes: 4
+    }
+    
+    await api
+        .post('/api/blogs')
+        .set('Authorization', `bearer ${token}`)
         .send(newBlog)
         .expect(200)
         .expect('Content-Type', /application\/json/)

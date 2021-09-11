@@ -68,7 +68,7 @@ test('posted blog is saved correctly', async() => {
         url: "http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html",
         likes: 4
     }
-    console.log(token)
+
     await api
         .post('/api/blogs')
         .set('Authorization', `bearer ${token}`)
